@@ -8,16 +8,12 @@
 package com.falsepattern.lumina.internal.collection;
 
 import gnu.trove.set.hash.TLongHashSet;
+import lombok.NoArgsConstructor;
 import lombok.val;
 
-public class PosHashSet extends TLongHashSet {
+@NoArgsConstructor
+public final class PosLongHashSet extends TLongHashSet {
     private static final int HASH_PRIME = 92821;
-
-    private static int ballerHash(long key) {
-        val a = (int) key;
-        val b = (int) (key >>> 32);
-        return a + (b * HASH_PRIME);
-    }
 
     protected int index(long val) {
         int hash, probe, index, length;
@@ -25,7 +21,7 @@ public class PosHashSet extends TLongHashSet {
         final byte[] states = _states;
         final long[] set = _set;
         length = states.length;
-        hash = ballerHash(val) & 0x7fffffff;
+        hash = posLongHash(val) & 0x7fffffff;
         index = hash % length;
         byte state = states[index];
 
@@ -38,7 +34,7 @@ public class PosHashSet extends TLongHashSet {
         return indexRehashed(val, index, hash, state);
     }
 
-    int indexRehashed(long key, int index, int hash, byte state) {
+    private int indexRehashed(long key, int index, int hash, byte state) {
         // see Knuth, p. 529
         int length = _set.length;
         int probe = 1 + (hash % (length - 2));
@@ -65,7 +61,7 @@ public class PosHashSet extends TLongHashSet {
     protected int insertKey(long val) {
         int hash, index;
 
-        hash = ballerHash(val) & 0x7fffffff;
+        hash = posLongHash(val) & 0x7fffffff;
         index = hash % _states.length;
         byte state = _states[index];
 
@@ -86,7 +82,7 @@ public class PosHashSet extends TLongHashSet {
         return insertKeyRehash(val, index, hash, state);
     }
 
-    int insertKeyRehash(long val, int index, int hash, byte state) {
+    private int insertKeyRehash(long val, int index, int hash, byte state) {
         // compute the double hash
         final int length = _set.length;
         int probe = 1 + (hash % (length - 2));
@@ -137,8 +133,14 @@ public class PosHashSet extends TLongHashSet {
         throw new IllegalStateException("No free or removed slots available. Key set full?!!");
     }
 
-    void insertKeyAt(int index, long val) {
+    private void insertKeyAt(int index, long val) {
         _set[index] = val;  // insert value
         _states[index] = FULL;
+    }
+
+    private static int posLongHash(long key) {
+        val a = (int) key;
+        val b = (int) (key >>> 32);
+        return a + (b * HASH_PRIME);
     }
 }
