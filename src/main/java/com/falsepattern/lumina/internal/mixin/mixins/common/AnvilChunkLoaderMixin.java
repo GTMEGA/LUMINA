@@ -7,7 +7,6 @@
 
 package com.falsepattern.lumina.internal.mixin.mixins.common;
 
-import com.falsepattern.lumina.internal.mixin.hook.LightingHooks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
@@ -22,6 +21,6 @@ public abstract class AnvilChunkLoaderMixin {
             at = @At("HEAD"),
             require = 1)
     private void processLightUpdatesOnSave(World worldBase, Chunk chunkBase, CallbackInfo callbackInfo) {
-        LightingHooks.processLightUpdates(worldBase);
+//        LightingHooks.processLightUpdates(worldBase);
     }
 }

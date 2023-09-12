@@ -7,7 +7,6 @@
 
 package com.falsepattern.lumina.internal.mixin.mixins.common;
 
-import com.falsepattern.lumina.internal.mixin.hook.LightingHooks;
 import net.minecraft.network.play.server.S21PacketChunkData;
 import net.minecraft.world.chunk.Chunk;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,10 +21,10 @@ public abstract class S21PacketChunkDataMixin {
     @Inject(method = "func_149269_a",
             at = @At("HEAD"),
             require = 1)
-    private static void processLightUpdatesOnReceive(Chunk chunkBase,
-                                                     boolean hasSky,
-                                                     int subChunkMask,
-                                                     CallbackInfoReturnable<S21PacketChunkData.Extracted> cir) {
-        LightingHooks.processLightUpdates(chunkBase);
+    private static void processLightUpdatesPreSend(Chunk chunkBase,
+                                                   boolean hasSky,
+                                                   int subChunkMask,
+                                                   CallbackInfoReturnable<S21PacketChunkData.Extracted> cir) {
+//        LightingHooks.processLightUpdates(chunkBase);
     }
 }

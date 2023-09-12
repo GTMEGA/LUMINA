@@ -7,16 +7,12 @@
 
 package com.falsepattern.lumina.internal.mixin.mixins.client;
 
-import com.falsepattern.lumina.internal.mixin.hook.LightingHooks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.profiler.Profiler;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
@@ -27,14 +23,14 @@ public abstract class MinecraftMixin {
     @Shadow
     public WorldClient theWorld;
 
-    @Inject(method = "runTick",
-            at = @At(value = "CONSTANT",
-                     args = "stringValue=levelRenderer",
-                     shift = At.Shift.BY,
-                     by = -3),
-            require = 1)
-    private void updateClientLighting(CallbackInfo ci) {
-        mcProfiler.endStartSection("lighting");
-        LightingHooks.processLightUpdates(theWorld);
-    }
+//    @Inject(method = "runTick",
+//            at = @At(value = "CONSTANT",
+//                     args = "stringValue=levelRenderer",
+//                     shift = At.Shift.BY,
+//                     by = -3),
+//            require = 1)
+//    private void updateClientLighting(CallbackInfo ci) {
+//        mcProfiler.endStartSection("lighting");
+//        LightingHooks.processLightUpdates(theWorld);
+//    }
 }

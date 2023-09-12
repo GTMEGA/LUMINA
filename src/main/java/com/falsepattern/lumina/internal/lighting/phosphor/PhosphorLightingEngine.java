@@ -267,7 +267,7 @@ public final class PhosphorLightingEngine implements LumiLightingEngine {
 
     @Override
     public int getCurrentLightValue(@NotNull LightType lightType, int posX, int posY, int posZ) {
-        processLightingUpdatesForType(lightType);
+//        processLightingUpdatesForType(lightType);
         return clampLightValue(world.lumi$getLightValue(lightType, posX, posY, posZ));
     }
 
@@ -425,14 +425,14 @@ public final class PhosphorLightingEngine implements LumiLightingEngine {
         val isUpdating = chunkRoot.lumi$isUpdating();
         val isClientSide = worldRoot.lumi$isClientSide();
 
-        final int maxUpdateIterations;
-        if (isClientSide && isUpdating) {
-            maxUpdateIterations = 256;
-        } else if (isClientSide) {
-            maxUpdateIterations = 64;
-        } else {
-            maxUpdateIterations = 32;
-        }
+        final int maxUpdateIterations = 1024;
+//        if (isClientSide && isUpdating) {
+//            maxUpdateIterations = 256;
+//        } else if (isClientSide) {
+//            maxUpdateIterations = 64;
+//        } else {
+//            maxUpdateIterations = 32;
+//        }
 
         val chunkPosX = chunk.lumi$chunkPosX();
         val chunkPosZ = chunk.lumi$chunkPosZ();
@@ -680,40 +680,10 @@ public final class PhosphorLightingEngine implements LumiLightingEngine {
     public void processLightingUpdatesForAllTypes() {
         for (val lightType : values())
             processLightingUpdatesForType(lightType);
-
-        // We only want to perform updates if we're being called from a tick event on the client
-        // There are many locations in the client code which will end up making calls to this method, usually from
-        // other threads.
-        if (worldRoot.lumi$isClientSide() && !isCallingFromClientThread())
-            return;
-
-        // Quickly check if the queue is empty before we acquire a more expensive lock.
-        hasQueuedUpdatesCheck:
-        {
-            for (val lightType : values()) {
-                val queue = updateQueues[lightType.ordinal()];
-                if (!queue.isEmpty())
-                    break hasQueuedUpdatesCheck;
-            }
-            return;
-        }
-
-        acquireLock();
-        try {
-            for (val lightType : values()) {
-                val queue = updateQueues[lightType.ordinal()];
-                processLightUpdateQueue(lightType, queue);
-            }
-        } finally {
-            releaseLock();
-        }
     }
 
     private void scheduleLightingUpdate(LightType lightType, long posLong) {
         val queue = updateQueues[lightType.ordinal()];
-        if (queue.size() >= 100_000)
-            processLightingUpdatesForType(lightType);
-
         queue.add(posLong);
     }
 
