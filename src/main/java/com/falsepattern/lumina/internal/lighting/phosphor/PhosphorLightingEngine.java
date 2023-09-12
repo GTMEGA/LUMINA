@@ -278,7 +278,7 @@ public final class PhosphorLightingEngine implements LumiLightingEngine {
 
     @Override
     public int getCurrentLightValue(@NotNull LightType lightType, int posX, int posY, int posZ) {
-//        processLightingUpdatesForType(lightType);
+        processLightingUpdatesForType(lightType);
         return clampLightValue(world.lumi$getLightValue(lightType, posX, posY, posZ));
     }
 

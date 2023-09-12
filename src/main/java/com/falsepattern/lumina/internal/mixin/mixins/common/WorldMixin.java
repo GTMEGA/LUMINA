@@ -13,9 +13,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(World.class)
 public abstract class WorldMixin implements IBlockAccess {
@@ -27,13 +24,6 @@ public abstract class WorldMixin implements IBlockAccess {
     public boolean updateLightByType(EnumSkyBlock baseLightType, int posX, int posY, int posZ) {
         LightingHooks.scheduleLightingUpdate(thiz(), baseLightType, posX, posY, posZ);
         return true;
-    }
-
-    @Inject(method = "tick",
-            at = @At("RETURN"),
-            require = 1)
-    private void processLightUpdates(CallbackInfo cir) {
-        LightingHooks.processLightUpdates(thiz());
     }
 
     private World thiz() {

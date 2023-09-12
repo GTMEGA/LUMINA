@@ -7,6 +7,7 @@
 
 package com.falsepattern.lumina.internal.mixin.mixins.common;
 
+import com.falsepattern.lumina.internal.mixin.hook.LightingHooks;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.ChunkProviderServer;
@@ -30,7 +31,7 @@ public abstract class ChunkProviderServerMixin {
             at = @At("HEAD"),
             require = 1)
     private void processLightUpdatesOnSave(boolean saveAll, IProgressUpdate progressUpdate, CallbackInfoReturnable<Boolean> cir) {
-//        LightingHooks.processLightUpdates(worldObj);
+        LightingHooks.processLightUpdates(worldObj);
     }
 
     @Inject(method = "unloadQueuedChunks",
@@ -42,6 +43,6 @@ public abstract class ChunkProviderServerMixin {
         if (chunksToUnload.isEmpty())
             return;
 
-//        LightingHooks.processLightUpdates(worldObj);
+        LightingHooks.processLightUpdates(worldObj);
     }
 }
